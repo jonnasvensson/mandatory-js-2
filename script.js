@@ -1,8 +1,11 @@
 
-let player1 = { innerText: 'X'};
-let player2 = { innerText: 'O'};
-let player = 1;
+let player1 = { info: 'X'};
+let player2 = { info: 'O'};
 let gameOver = false;
+let rounds = 0;
+
+let player = player1;
+
 const winningArrays = [
   [0, 1, 2],
   [3, 4, 5],
@@ -14,28 +17,32 @@ const winningArrays = [
   [2, 5, 8]
 ];
 
+
 let boxes = document.querySelectorAll('.box');
 let button = document.querySelector('button');
 let main = document.querySelector('main');
+
+let xStyling = document.querySelector('.x-styling');
+let oStyling = document.querySelector('.o-styling');
+let noOneStyling = document.querySelector('.no-one-styling');
 
 Array.from(boxes).forEach(function(box) {
   box.addEventListener('click', function(e) {
     if (gameOver) {
       return;
     }
-    let checkBox = e.target.textContent;
-    box.setAttribute('style', 'font-size: 100px; text-align: center; line-height: 185px;')
-    if (player === 1 && checkBox === "") {
-      e.target.innerText = player1.innerText;
-      player -=1;
-      winningPlayer();
+    let checkBox = this.textContent;
+    box.setAttribute('style', 'font-family: Special Elite; font-size: 100px; text-align: center; line-height: 180px;')
+    if (checkBox === "") {
+      this.textContent = player.info;
+      rounds++;
+      winningplayer2();
       console.log(player1);
-    } else if (player !== 1 && checkBox === ""){
-      e.target.innerText = player2.innerText;
-      player += 1;
-      winningPlayer();
-      console.log(player2);
-
+      if (player.info === player1.info) {
+        player = player2;
+      } else {
+        player = player1;
+      }
     }
   });
 });
@@ -43,47 +50,68 @@ Array.from(boxes).forEach(function(box) {
 let x = 'X is the winner!';
 let o = 'O is the winner';
 
-function winningPlayer() { // Hur kan jag korta ner denna bit? Finns loop i en loop längst ned!!!!
-  if (boxes[0].innerText === 'X' && boxes[1].innerText === 'X' && boxes[2].innerText === 'X' ||
-      boxes[3].innerText === 'X' && boxes[4].innerText === 'X' && boxes[5].innerText === 'X' ||
-      boxes[6].innerText === 'X' && boxes[7].innerText === 'X' && boxes[8].innerText === 'X' ||
-      boxes[0].innerText === 'X' && boxes[3].innerText === 'X' && boxes[6].innerText === 'X' ||
-      boxes[1].innerText === 'X' && boxes[4].innerText === 'X' && boxes[7].innerText === 'X' ||
-      boxes[2].innerText === 'X' && boxes[5].innerText === 'X' && boxes[8].innerText === 'X' ||
-      boxes[0].innerText === 'X' && boxes[4].innerText === 'X' && boxes[8].innerText === 'X' ||
-      boxes[2].innerText === 'X' && boxes[4].innerText === 'X' && boxes[6].innerText === 'X') {
-    gameOver = true;
-    alert(x);
-    console.log(x);
-  } else if (boxes[0].innerText === 'O' && boxes[1].innerText === 'O' && boxes[2].innerText === 'O' ||
-             boxes[3].innerText === 'O' && boxes[4].innerText === 'O' && boxes[5].innerText === 'O' ||
-             boxes[6].innerText === 'O' && boxes[7].innerText === 'O' && boxes[8].innerText === 'O' ||
-             boxes[0].innerText === 'O' && boxes[3].innerText === 'O' && boxes[6].innerText === 'O' ||
-             boxes[1].innerText === 'O' && boxes[4].innerText === 'O' && boxes[7].innerText === 'O' ||
-             boxes[2].innerText === 'O' && boxes[5].innerText === 'O' && boxes[8].innerText === 'O' ||
-             boxes[0].innerText === 'O' && boxes[4].innerText === 'O' && boxes[8].innerText === 'O' ||
-             boxes[2].innerText === 'O' && boxes[4].innerText === 'O' && boxes[6].innerText === 'O') {
-    gameOver = true;
-    alert(o);
-  }
-}
-winningPlayer();
 
 button.addEventListener('click', function(e) {
   Array.from(boxes).forEach(function(box) {
-  box.innerHTML = "";
-  player = 1;
-  gameOver = false;
+    box.innerHTML = "";
+    xStyling.style.display = 'none';
+    oStyling.style.display = 'none';
+    noOneStyling.style.display = 'none';
+    player = player1;
+    gameOver = false;
   });
 });
 
-//Kan jag förenkla if satsen ovan?
 
-for (var i = 0; i < winningArrays.length; i++) {
-  let isthisWinningArray = winningArrays[i];
-  for (var j = 0; j < isthisWinningArray.length; j++) {
-    let checkEveryBox = isthisWinningArray[j];
-    console.log(checkEveryBox);
+function winningplayer2() {
+  let xWon = isWinner("X");
+  let oWon = isWinner("O");
+  if (xWon === true) {
+    gameOver = true;
+    xStyling.style.display = 'block';
+    console.log('X won');
+  } else if (oWon === true) {
+    oStyling.style.display = 'block';
+    console.log('O won');    
+  } else if (rounds >= 9) {
+    noOneStyling.style.display = 'block';
+   console.log('Its a tie') 
   }
-  console.log(isthisWinningArray);
 }
+
+function isWinner(type) {
+  for (var i = 0; i < winningArrays.length; i++) {
+    let isthisWinningArray = winningArrays[i];
+    let won = true;
+    for (var j = 0; j < isthisWinningArray.length; j++) {
+      let checkEveryBox = isthisWinningArray[j];
+      console.log(checkEveryBox);
+      let value = boxes[checkEveryBox].textContent;
+      if (value !== type) {
+        won = false;
+        break;
+      }
+    }
+    if (won) return true;
+    console.log(isthisWinningArray);
+  }
+  return false;
+}
+
+let blink_speed = 500; 
+setInterval(function () {
+    let xTitle = document.querySelector('.x-title');
+    xTitle.style.visibility = (xTitle.style.visibility === 'hidden' ? '' : 'hidden');
+}, blink_speed);
+
+
+setInterval(function () {
+    let oTitle = document.querySelector('.o-title');
+    oTitle.style.visibility = (oTitle.style.visibility === 'hidden' ? '' : 'hidden');
+}, blink_speed);
+
+
+setInterval(function () {
+  let noOne = document.querySelector('.no-one');
+  noOne.style.visibility = (noOne.style.visibility === 'hidden' ? '' : 'hidden');
+}, blink_speed);
