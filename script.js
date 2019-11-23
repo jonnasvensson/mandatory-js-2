@@ -22,9 +22,9 @@ let boxes = document.querySelectorAll('.box');
 let button = document.querySelector('button');
 let main = document.querySelector('main');
 
-let xStyling = document.querySelector('.x-styling');
-let oStyling = document.querySelector('.o-styling');
-let noOneStyling = document.querySelector('.no-one-styling');
+let winningBox = document.querySelector('.winningBox');
+let winningTitle = document.querySelector('.winningTitle');
+let tieTitle = document.querySelector('.tieTitle');
 
 Array.from(boxes).forEach(function(box) {
   box.addEventListener('click', function(e) {
@@ -54,9 +54,7 @@ let o = 'O is the winner';
 button.addEventListener('click', function(e) {
   Array.from(boxes).forEach(function(box) {
     box.innerHTML = "";
-    xStyling.style.display = 'none';
-    oStyling.style.display = 'none';
-    noOneStyling.style.display = 'none';
+    winningBox.style.display = 'none';
     player = player1;
     gameOver = false;
   });
@@ -68,14 +66,17 @@ function winningplayer2() {
   let oWon = isWinner("O");
   if (xWon === true) {
     gameOver = true;
-    xStyling.style.display = 'block';
+    winningBox.style.display = 'block';
+    winningTitle.textContent = 'X';
     console.log('X won');
   } else if (oWon === true) {
-    oStyling.style.display = 'block';
+    winningBox.style.display = 'block';
+    winningTitle.textContent = 'O';
     console.log('O won');    
   } else if (rounds >= 9) {
-    noOneStyling.style.display = 'block';
-   console.log('Its a tie') 
+    winningBox.style.display = 'block';
+    tieTitle.style.display = 'block';
+    console.log('Its a tie') 
   }
 }
 
@@ -98,20 +99,12 @@ function isWinner(type) {
   return false;
 }
 
+
 let blink_speed = 500; 
 setInterval(function () {
-    let xTitle = document.querySelector('.x-title');
-    xTitle.style.visibility = (xTitle.style.visibility === 'hidden' ? '' : 'hidden');
+    winningTitle.style.visibility = (winningTitle.style.visibility === 'hidden' ? '' : 'hidden');
 }, blink_speed);
 
-
 setInterval(function () {
-    let oTitle = document.querySelector('.o-title');
-    oTitle.style.visibility = (oTitle.style.visibility === 'hidden' ? '' : 'hidden');
-}, blink_speed);
-
-
-setInterval(function () {
-  let noOne = document.querySelector('.no-one');
-  noOne.style.visibility = (noOne.style.visibility === 'hidden' ? '' : 'hidden');
+    tieTitle.style.visibility = (tieTitle.style.visibility === 'hidden' ? '' : 'hidden');
 }, blink_speed);
